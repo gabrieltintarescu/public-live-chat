@@ -1,7 +1,6 @@
 package com.gabrieltintarescu.ChatboxServer.service;
 
 import com.gabrieltintarescu.ChatboxServer.model.User;
-import com.gabrieltintarescu.ChatboxServer.model.Role;
 
 import java.util.List;
 

@@ -2,7 +2,6 @@ package com.gabrieltintarescu.ChatboxServer.service;
 
 import com.gabrieltintarescu.ChatboxServer.model.User;
 import com.gabrieltintarescu.ChatboxServer.model.Role;
-import com.gabrieltintarescu.ChatboxServer.repository.RoleRepository;
 import com.gabrieltintarescu.ChatboxServer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
@@ -29,8 +28,6 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User saveUser(User user) {
-        log.info("Saving new user to the database: " + user.toString());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 

@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -23,10 +27,19 @@ import java.util.Collection;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotEmpty(message = "Name cannot be empty.")
     private String name;
+    @Column(unique=true)
+    @NotEmpty(message = "Email cannot be empty.")
+    @Email(message = "Email should be valid.")
+    private String email;
+    @Column(unique=true)
+    @NotNull(message = "Username cannot be empty.")
     private String username;
+    @NotNull(message = "Password cannot be empty.")
+    @Size(min = 8,  message = "Password should have at least 8 characters.")
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
