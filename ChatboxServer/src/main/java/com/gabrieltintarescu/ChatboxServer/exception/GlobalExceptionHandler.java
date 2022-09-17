@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
                 .message("Generic error")
-                .details(exception.getMessage())
+                .details(exception.getMessage().split(";")[0])
                 .path(request.getDescription(false))
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }

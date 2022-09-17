@@ -26,9 +26,8 @@ public class UserController {
 
 
     @GetMapping("/all")
-    List<User> getUsers() throws ResourceNotFoundException {
-        throw new ResourceNotFoundException("pula mea");
-        //return userService.getUsers();
+    List<User> getUsers() {
+        return userService.getUsers();
     }
 
     @PostMapping("/register")

@@ -6,10 +6,16 @@ import com.gabrieltintarescu.ChatboxServer.model.Role;
 import com.gabrieltintarescu.ChatboxServer.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -21,18 +27,41 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 @Slf4j
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
     private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        // Trying to fetch user either my username or email.
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found.");
+        }
+        user = userRepository.findByEmail(username);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found.");
+        }
+        // Transforming authorities strings to SimpleGrantedAuthorities
+        Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));
+        return new org.springframework.security.core.userdetails.User(
+                user.getUsername(),
+                user.getPassword(),
+                authorities
+        );
+    }
+
+    @Override
     public User saveUser(User user) throws UserAlreadyExistsException {
+        // Making sure user
         if(userRepository.findByUsername(user.getUsername()) != null ||
         userRepository.findByEmail(user.getEmail()) != null){
             throw new UserAlreadyExistsException();
         }
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
