@@ -71,7 +71,16 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 }
 
             } else {
-                filterChain.doFilter(request, response);
+//                filterChain.doFilter(request, response);
+                response.setStatus(FORBIDDEN.value());
+                ErrorDetails errorDetails = ErrorDetails.builder()
+                        .timestamp(new Date())
+                        .message("Unauthorized Access")
+                        .details("Access to the requested resource is denied.")
+                        .path(request.getServletPath())
+                        .build();
+                response.setContentType(APPLICATION_JSON_VALUE);
+                new ObjectMapper().writeValue(response.getOutputStream(), errorDetails);
             }
         }
 

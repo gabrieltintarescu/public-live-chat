@@ -27,14 +27,12 @@ public class SecurityConfiguration {
                 .apply(new JwtHttpConfigurer())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
         for (int i = 0; i < SecurityUtil.allowedURLS.size(); i++) {
             http.authorizeHttpRequests().antMatchers(
                     SecurityUtil.allowedURLS.get(i) + "/**"
             ).permitAll();
         }
         http.authorizeHttpRequests().anyRequest().authenticated();
-
         return http.build();
     }
 }
