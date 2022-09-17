@@ -1,5 +1,7 @@
 package com.gabrieltintarescu.ChatboxServer.controller;
 
+import com.gabrieltintarescu.ChatboxServer.exception.errors.ResourceNotFoundException;
+import com.gabrieltintarescu.ChatboxServer.exception.errors.UserAlreadyExistsException;
 import com.gabrieltintarescu.ChatboxServer.model.User;
 import com.gabrieltintarescu.ChatboxServer.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -24,12 +26,13 @@ public class UserController {
 
 
     @GetMapping("/all")
-    List<User> getUsers() {
-        return userService.getUsers();
+    List<User> getUsers() throws ResourceNotFoundException {
+        throw new ResourceNotFoundException("pula mea");
+        //return userService.getUsers();
     }
 
     @PostMapping("/register")
-    public User registerUser(@Valid @RequestBody User user) {
+    public User registerUser(@Valid @RequestBody User user) throws UserAlreadyExistsException {
         return userService.saveUser(user);
     }
 

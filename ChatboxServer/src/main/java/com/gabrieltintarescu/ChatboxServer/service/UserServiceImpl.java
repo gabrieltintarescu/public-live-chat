@@ -1,5 +1,6 @@
 package com.gabrieltintarescu.ChatboxServer.service;
 
+import com.gabrieltintarescu.ChatboxServer.exception.errors.UserAlreadyExistsException;
 import com.gabrieltintarescu.ChatboxServer.model.User;
 import com.gabrieltintarescu.ChatboxServer.model.Role;
 import com.gabrieltintarescu.ChatboxServer.repository.UserRepository;
@@ -27,7 +28,11 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public User saveUser(User user) {
+    public User saveUser(User user) throws UserAlreadyExistsException {
+        if(userRepository.findByUsername(user.getUsername()) != null ||
+        userRepository.findByEmail(user.getEmail()) != null){
+            throw new UserAlreadyExistsException();
+        }
         return userRepository.save(user);
     }
 

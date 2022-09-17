@@ -36,10 +36,9 @@ public class User {
     @Email(message = "Email should be valid.")
     private String email;
     @Column(unique=true)
-    @NotNull(message = "Username cannot be empty.")
+    @NotEmpty(message = "Username cannot be empty.")
     private String username;
-    @NotNull(message = "Password cannot be empty.")
-    @Size(min = 8,  message = "Password should have at least 8 characters.")
+    @NotEmpty(message = "Username cannot be empty.")
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
