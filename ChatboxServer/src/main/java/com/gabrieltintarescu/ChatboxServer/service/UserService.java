@@ -15,4 +15,5 @@ public interface UserService {
     User saveUser(User user) throws UserAlreadyExistsException;
     void addRoleToUser( Role role, String username);
     List<User> getUsers();
+    User getUser(String username);
 }
