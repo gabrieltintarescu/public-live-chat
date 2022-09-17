@@ -38,12 +38,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // Trying to fetch user either my username or email.
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new UsernameNotFoundException("User not found.");
+            user = userRepository.findByEmail(username);
+            if (user == null) {
+                throw new UsernameNotFoundException("User not found.");
+            }
         }
-        user = userRepository.findByEmail(username);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found.");
-        }
+
         // Transforming authorities strings to SimpleGrantedAuthorities
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));

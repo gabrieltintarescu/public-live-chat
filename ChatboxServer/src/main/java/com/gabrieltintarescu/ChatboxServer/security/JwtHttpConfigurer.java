@@ -1,6 +1,7 @@
 package com.gabrieltintarescu.ChatboxServer.security;
 
 import com.gabrieltintarescu.ChatboxServer.security.filter.CustomAuthenticationFilter;
+import com.gabrieltintarescu.ChatboxServer.security.filter.CustomAuthorizationFilter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -18,5 +19,6 @@ public class JwtHttpConfigurer extends AbstractHttpConfigurer<JwtHttpConfigurer,
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.addFilter(customAuthenticationFilter);
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 }

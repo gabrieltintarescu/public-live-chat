@@ -2,7 +2,10 @@ package com.gabrieltintarescu.ChatboxServer.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gabrieltintarescu.ChatboxServer.exception.ErrorDetails;
 import com.gabrieltintarescu.ChatboxServer.security.util.JwtUtil;
+import com.google.gson.Gson;
+import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.FORBIDDEN;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 /**
@@ -29,7 +33,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @project ChatboxServer
  * @created 9/17/2022
  */
-
+@Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
@@ -41,10 +45,21 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        String requestBody = null;
+        try {
+            requestBody = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        } catch (IOException e) {
+        }
+
+        LoginData loginData = new Gson().fromJson(requestBody, LoginData.class);
+        if (loginData == null) {
+            return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(null, null));
+        }
+
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword());
         return authenticationManager.authenticate(authenticationToken);
+
 
     }
 
@@ -69,6 +84,25 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("refresh_token", refreshToken);
         response.setContentType(APPLICATION_JSON_VALUE);
         new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException failed) throws IOException, ServletException {
+        response.setStatus(FORBIDDEN.value());
+        ErrorDetails errorDetails = ErrorDetails.builder()
+                .timestamp(new Date())
+                .message("Unauthorized Access")
+                .details("Incorrect user or password, please try again.")
+                .path(request.getServletPath())
+                .build();
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), errorDetails);
+    }
+
+    @Data
+    private class LoginData {
+        private String username;
+        private String password;
     }
 }
 

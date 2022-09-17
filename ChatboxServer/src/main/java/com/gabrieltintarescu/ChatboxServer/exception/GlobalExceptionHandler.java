@@ -1,6 +1,7 @@
 package com.gabrieltintarescu.ChatboxServer.exception;
 
 import com.gabrieltintarescu.ChatboxServer.exception.errors.ResourceNotFoundException;
+import com.gabrieltintarescu.ChatboxServer.exception.errors.UnauthorizedAccessException;
 import com.gabrieltintarescu.ChatboxServer.exception.errors.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +33,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(UserAlreadyExistsException exception, WebRequest request) {
+    public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
                 .message("User already exists")
@@ -42,11 +43,21 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<?> handleResourceNotFoundException(MethodArgumentNotValidException exception, WebRequest request) {
+    public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
-                .message("Invalid data")
+                .message("Invalid Data")
                 .details("The entered data did not pass validation. Please check and try again.")
+                .path(ErrorUtil.getPath(request))
+                .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UnauthorizedAccessException.class)
+    public ResponseEntity<?> handleUnauthorizedAccessException(UnauthorizedAccessException exception, WebRequest request) {
+        return new ResponseEntity(ErrorDetails.builder()
+                .timestamp(new Date())
+                .message("Unauthorized Access")
+                .details(exception.getMessage())
                 .path(ErrorUtil.getPath(request))
                 .build(), HttpStatus.BAD_REQUEST);
     }
@@ -59,7 +70,7 @@ public class GlobalExceptionHandler {
                 .timestamp(new Date())
                 .message("Generic error")
                 .details(exception.getMessage().split(";")[0])
-                .path(request.getDescription(false))
+                .path(ErrorUtil.getPath(request))
                 .build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
