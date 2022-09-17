@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author Gabriel Tintarescu
  * @project ChatboxServer
@@ -27,11 +30,18 @@ public class SecurityConfiguration {
                 .apply(new JwtHttpConfigurer())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        for (int i = 0; i < SecurityUtil.allowedURLS.size(); i++) {
+        for (String url : SecurityUtil.allowedURLS) {
             http.authorizeHttpRequests().antMatchers(
-                    SecurityUtil.allowedURLS.get(i) + "/**"
+                    url + "/**"
             ).permitAll();
         }
+        for (String url : SecurityUtil.moderatorURLS) {
+            http.authorizeHttpRequests().antMatchers(HttpMethod.POST, url).hasAnyAuthority("ROLE_MODERATOR");
+        }
+        for (String url : SecurityUtil.adminURLS) {
+            http.authorizeHttpRequests().antMatchers(HttpMethod.POST, url).hasAnyAuthority("ROLE_ADMIN");
+        }
+
         http.authorizeHttpRequests().anyRequest().authenticated();
         return http.build();
     }

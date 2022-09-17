@@ -30,7 +30,6 @@ import java.util.List;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleService roleService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -66,18 +65,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
-        log.info("Adding role {} to user: {}", username, roleName);
-        //TODO:  Validation
+    public void addRoleToUser(Role role, String username) {
         User user = userRepository.findByUsername(username);
-        Role role = roleService.findByName(roleName);
         user.getRoles().add(role);
     }
 
-    @Override
-    public User getUser(String username) {
-        return null;
-    }
 
     @Override
     public List<User> getUsers() {

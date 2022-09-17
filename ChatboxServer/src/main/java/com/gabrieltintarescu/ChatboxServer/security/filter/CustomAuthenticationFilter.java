@@ -91,6 +91,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setStatus(FORBIDDEN.value());
         ErrorDetails errorDetails = ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(1)
                 .message("Unauthorized Access")
                 .details("Incorrect user or password, please try again.")
                 .path(request.getServletPath())

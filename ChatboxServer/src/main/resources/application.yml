@@ -1,5 +1,8 @@
 server:
   port: 80
+  error:
+    whitelabel:
+      enabled: false
 
 
 spring:
@@ -8,6 +11,8 @@ spring:
     username: root
     password: admin
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    throw-exception-if-no-handler-found: true
   jpa:
     hibernate:
       ddl-auto: create
@@ -15,3 +20,6 @@ spring:
     properties:
       hibernate:
         format_sql: false
+  web:
+    resources:
+      add-mappings: false

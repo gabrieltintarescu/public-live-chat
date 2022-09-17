@@ -15,7 +15,14 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 public class ErrorDetails {
+    /* Code mapping:
+    0 - General Error
+    1 - Unauthorized
+    2 - Token Expired
+    */
+
     private Date timestamp;
+    private int code;
     private String message;
     private String details;
     private String path;

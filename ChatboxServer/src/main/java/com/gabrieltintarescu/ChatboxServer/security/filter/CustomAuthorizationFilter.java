@@ -2,6 +2,7 @@ package com.gabrieltintarescu.ChatboxServer.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabrieltintarescu.ChatboxServer.exception.ErrorDetails;
@@ -59,11 +60,19 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                     filterChain.doFilter(request, response);
                 } catch (Exception e) {
+                    int code = 1;
+                    String details = "Access to the requested resource is denied.";
+                    if(e instanceof TokenExpiredException){
+                        code = 2;
+                        details = "Access denied: your token has expired.";
+                    }
+                    log.error(e.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     ErrorDetails errorDetails = ErrorDetails.builder()
                             .timestamp(new Date())
+                            .code(code)
                             .message("Unauthorized Access")
-                            .details("Access to the requested resource is denied.")
+                            .details(details)
                             .path(request.getServletPath())
                             .build();
                     response.setContentType(APPLICATION_JSON_VALUE);
@@ -75,6 +84,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 response.setStatus(FORBIDDEN.value());
                 ErrorDetails errorDetails = ErrorDetails.builder()
                         .timestamp(new Date())
+                        .code(1)
                         .message("Unauthorized Access")
                         .details("Access to the requested resource is denied.")
                         .path(request.getServletPath())

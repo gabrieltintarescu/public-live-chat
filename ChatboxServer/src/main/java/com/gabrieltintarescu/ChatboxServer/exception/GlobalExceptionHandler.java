@@ -8,7 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.Date;
 
@@ -17,7 +20,7 @@ import java.util.Date;
  * @project ChatboxServer
  * @created 9/16/2022
  */
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalExceptionHandler {
 
     //  Handle specific exceptions
@@ -26,6 +29,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(0)
                 .message("Resource not found")
                 .details(exception.getMessage())
                 .path(ErrorUtil.getPath(request))
@@ -36,6 +40,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUserAlreadyExistsException(UserAlreadyExistsException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(0)
                 .message("User already exists")
                 .details(exception.getMessage())
                 .path(ErrorUtil.getPath(request))
@@ -46,6 +51,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(0)
                 .message("Invalid Data")
                 .details("The entered data did not pass validation. Please check and try again.")
                 .path(ErrorUtil.getPath(request))
@@ -56,10 +62,25 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleUnauthorizedAccessException(UnauthorizedAccessException exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(1)
                 .message("Unauthorized Access")
                 .details(exception.getMessage())
                 .path(ErrorUtil.getPath(request))
                 .build(), HttpStatus.BAD_REQUEST);
+    }
+
+    // 404 Errors
+
+    @ExceptionHandler(NoHandlerFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<?> handleNoHandlerFound(NoHandlerFoundException exception, WebRequest request) {
+        return new ResponseEntity(ErrorDetails.builder()
+                .timestamp(new Date())
+                .code(0)
+                .message("Generic error")
+                .details(exception.getLocalizedMessage())
+                .path(ErrorUtil.getPath(request))
+                .build(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     // Handle global exceptions
@@ -68,6 +89,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleGlobalException(Exception exception, WebRequest request) {
         return new ResponseEntity(ErrorDetails.builder()
                 .timestamp(new Date())
+                .code(0)
                 .message("Generic error")
                 .details(exception.getMessage().split(";")[0])
                 .path(ErrorUtil.getPath(request))
