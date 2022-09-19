@@ -80,4 +80,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public User getUser(String username) {
         return userRepository.findByUsername(username);
     }
+
+    @Override
+    public void banUser(String username) {
+        User user = userRepository.findByUsername(username);
+        user.setBanned(true);
+    }
 }

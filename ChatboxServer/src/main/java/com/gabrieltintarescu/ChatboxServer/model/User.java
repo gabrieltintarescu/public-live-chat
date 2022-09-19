@@ -40,6 +40,17 @@ public class User {
     private String username;
     @NotEmpty(message = "Username cannot be empty.")
     private String password;
+    private boolean isBanned = false;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles = new ArrayList<>();
+
+    public User(Long id, String name, String email, String username, String password, Collection<Role> roles) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.isBanned = false;
+        this.roles = roles;
+    }
 }
