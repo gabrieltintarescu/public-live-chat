@@ -1,4 +1,4 @@
-import 'package:chatbox_client/pages/Welcome/welcome_page.dart';
+import 'package:chatbox_client/pages/Login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -7,6 +7,6 @@ void main() {
     title: 'ChatBox',
     debugShowCheckedModeBanner: true,
     theme: ThemeData(fontFamily: 'Nexa'),
-    home: const WelcomePage(),
+    home: const LoginPage(),
   ));
 }
