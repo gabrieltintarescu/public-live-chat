@@ -18,16 +18,11 @@ import org.springframework.stereotype.Component;
  */
 public class JwtHttpConfigurer extends AbstractHttpConfigurer<JwtHttpConfigurer, HttpSecurity> {
 
-    private final UserService userService;
-
-    public JwtHttpConfigurer(UserService userService) {
-        this.userService = userService;
-    }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         final AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
-        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager, userService);
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManager);
         customAuthenticationFilter.setFilterProcessesUrl("/api/v1/login");
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);

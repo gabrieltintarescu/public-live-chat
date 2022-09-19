@@ -43,6 +43,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             }
         }
 
+        if(user.isBanned()){
+            throw new UsernameNotFoundException("You are permanently banned from the server.");
+        }
+
         // Transforming authorities strings to SimpleGrantedAuthorities
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getName())));

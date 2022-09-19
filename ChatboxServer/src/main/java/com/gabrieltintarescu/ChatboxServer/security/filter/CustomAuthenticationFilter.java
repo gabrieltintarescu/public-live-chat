@@ -40,12 +40,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
-    private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
     }
 
     @Override
@@ -71,21 +69,6 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
-
-        // Check if User is banned.
-        if(userService.getUser(user.getUsername()).isBanned()){
-            response.setContentType(APPLICATION_JSON_VALUE);
-            new ObjectMapper().writeValue(response.getOutputStream(),
-                    ErrorDetails.builder()
-                            .code(0)
-                            .timestamp(new Date())
-                            .path(request.getRequestURL().toString())
-                            .message("User banned")
-                            .details("You are permanently banned from this server.")
-                            .build()
-                    );
-            return;
-        }
 
 
         String accessToken = JWT.create()
@@ -115,7 +98,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .timestamp(new Date())
                 .code(1)
                 .message("Unauthorized Access")
-                .details("Incorrect user or password, please try again.")
+                .details(failed.getLocalizedMessage())
                 .path(request.getServletPath())
                 .build();
         response.setContentType(APPLICATION_JSON_VALUE);

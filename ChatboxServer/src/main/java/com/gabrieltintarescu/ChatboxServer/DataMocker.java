@@ -34,7 +34,7 @@ public class DataMocker implements CommandLineRunner {
         roleService.saveRole(new Role(null, "ROLE_MODERATOR"));
         roleService.saveRole(new Role(null, "ROLE_ADMIN"));
 
-        userService.saveUser(new User(null, "Gabriel Tintarescu", "gabriel_tintarescu@yahoo.com", "gabi", "1234", new ArrayList<>()));
+        userService.saveUser(new User(null, "Gabriel Tintarescu", "gabriel_tintarescu@yahoo.com", "gabi", "1234",true, new ArrayList<>()));
         userService.saveUser(new User(null, "Teodor Nicolau", "teodor@yahoo.com", "teo", "1234", new ArrayList<>()));
 
         userService.addRoleToUser(roleService.findByName("ROLE_USER"), "gabi");

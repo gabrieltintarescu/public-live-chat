@@ -24,13 +24,12 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
-    private final UserService userService;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-                .apply(new JwtHttpConfigurer(userService))
+                .apply(new JwtHttpConfigurer())
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         for (String url : SecurityUtil.allowedURLS) {
