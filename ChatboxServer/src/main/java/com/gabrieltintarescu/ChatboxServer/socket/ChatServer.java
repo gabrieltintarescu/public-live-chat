@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PreDestroy;
 import java.util.Arrays;
 
 /**
@@ -33,6 +34,7 @@ public class ChatServer implements CommandLineRunner {
 
 
     private final UserService userService;
+    private SocketIOServer server;
 
     @Override
     public void run(String... args) throws Exception {
@@ -41,7 +43,7 @@ public class ChatServer implements CommandLineRunner {
         config.setHostname("localhost");
         config.setPort(8080);
 
-        final SocketIOServer server = new SocketIOServer(config);
+        server = new SocketIOServer(config);
 
         server.addEventListener("msg", ChatMessage.class, new DataListener<ChatMessage>() {
             @Override
@@ -125,5 +127,10 @@ public class ChatServer implements CommandLineRunner {
 
         server.start();
 
+    }
+
+    @PreDestroy
+    public void onExit() {
+        server.stop();
     }
 }

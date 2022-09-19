@@ -4,9 +4,11 @@ import com.auth0.jwt.JWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gabrieltintarescu.ChatboxServer.exception.ErrorDetails;
 import com.gabrieltintarescu.ChatboxServer.security.util.JwtUtil;
+import com.gabrieltintarescu.ChatboxServer.service.UserService;
 import com.google.gson.Gson;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -14,6 +16,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -34,12 +37,15 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
  * @created 9/17/2022
  */
 @Slf4j
+
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+    private final UserService userService;
     private final AuthenticationManager authenticationManager;
 
-    public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public CustomAuthenticationFilter(AuthenticationManager authenticationManager, UserService userService) {
         this.authenticationManager = authenticationManager;
+        this.userService = userService;
     }
 
     @Override
@@ -60,12 +66,28 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 new UsernamePasswordAuthenticationToken(loginData.getUsername(), loginData.getPassword());
         return authenticationManager.authenticate(authenticationToken);
 
-
     }
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
         User user = (User) authentication.getPrincipal();
+
+        // Check if User is banned.
+        if(userService.getUser(user.getUsername()).isBanned()){
+            response.setContentType(APPLICATION_JSON_VALUE);
+            new ObjectMapper().writeValue(response.getOutputStream(),
+                    ErrorDetails.builder()
+                            .code(0)
+                            .timestamp(new Date())
+                            .path(request.getRequestURL().toString())
+                            .message("User banned")
+                            .details("You are permanently banned from this server.")
+                            .build()
+                    );
+            return;
+        }
+
+
         String accessToken = JWT.create()
                 .withSubject(user.getUsername())
                 .withExpiresAt(new Date(System.currentTimeMillis() + JwtUtil.ACCESS_TOKEN_EXP * 60 * 1000))

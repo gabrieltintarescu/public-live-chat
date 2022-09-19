@@ -69,6 +69,16 @@ public class GlobalExceptionHandler {
                 .build(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<?> handleNullPointerException(NullPointerException exception, WebRequest request) {
+        return new ResponseEntity(ErrorDetails.builder()
+                .timestamp(new Date())
+                .code(0)
+                .message("Generic error")
+                .details(exception.getMessage().split(";")[0])
+                .path(ErrorUtil.getPath(request))
+                .build(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     // 404 Errors
 
     @ExceptionHandler(NoHandlerFoundException.class)

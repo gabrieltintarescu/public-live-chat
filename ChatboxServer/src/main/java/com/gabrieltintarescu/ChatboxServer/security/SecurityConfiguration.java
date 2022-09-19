@@ -1,6 +1,7 @@
 package com.gabrieltintarescu.ChatboxServer.security;
 
 import com.gabrieltintarescu.ChatboxServer.security.util.SecurityUtil;
+import com.gabrieltintarescu.ChatboxServer.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,11 +24,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SecurityConfiguration {
 
+    private final UserService userService;
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http
-                .apply(new JwtHttpConfigurer())
+                .apply(new JwtHttpConfigurer(userService))
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         for (String url : SecurityUtil.allowedURLS) {
