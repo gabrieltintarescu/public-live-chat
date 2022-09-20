@@ -14,24 +14,21 @@ class WelcomeButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Hero(
-          tag: "login_btn",
-          child: RoundedButton(
-              text: 'Login',
-              onPress: () => Get.to(
-                    () => const LoginPage(),
-                    transition: Transition.rightToLeft,
-                  ),
-              color: kPrimaryColor,
-              textColor: Colors.white),
-        ),
+        RoundedButton(
+            text: 'Login',
+            onPress: () => Get.to(
+                  () => const LoginPage(),
+                  transition: Transition.rightToLeft,
+                ),
+            color: kPrimaryColor,
+            textColor: Colors.white),
         const SizedBox(height: 16),
         FittedBox(
           child: RoundedButton(
               text: 'Sign up',
               onPress: () => Get.to(
-                    () => const SignupPage(),
-                    transition: Transition.leftToRight,
+                    () => SignupPage(),
+                    transition: Transition.rightToLeft,
                   ),
               color: kPrimaryLightColor,
               textColor: Colors.black),

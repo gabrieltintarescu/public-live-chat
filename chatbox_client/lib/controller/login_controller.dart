@@ -9,6 +9,9 @@ import 'package:http/http.dart' as http;
 
 class LoginController extends GetxController {
   void login(String username, String password) {
+    if (username.isEmpty || password.isEmpty) {
+      return;
+    }
     loginRequest(username, password).then((tokenResponse) {
       if (tokenResponse == null) {
         Get.snackbar(

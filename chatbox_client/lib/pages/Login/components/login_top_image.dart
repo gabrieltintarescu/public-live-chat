@@ -13,7 +13,10 @@ class LoginTopImage extends StatelessWidget {
       children: [
         const Text(
           "Login to ChatBox",
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 32),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 32,
+          ),
         ),
         const SizedBox(height: defaultPadding * 2),
         Row(

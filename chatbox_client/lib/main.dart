@@ -6,7 +6,7 @@ import 'pages/Welcome/welcome_page.dart';
 void main() {
   runApp(GetMaterialApp(
     title: 'ChatBox',
-    debugShowCheckedModeBanner: true,
+    debugShowCheckedModeBanner: false,
     theme: ThemeData(fontFamily: 'Nexa'),
     home: const WelcomePage(),
   ));

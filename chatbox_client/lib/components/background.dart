@@ -8,9 +8,11 @@ class Background extends StatelessWidget {
     required this.child,
     this.topImage = "assets/images/main_top.png",
     this.bottomImage = "assets/images/login_bottom.png",
+    this.isSignup = false,
   }) : super(key: key);
 
   final String topImage, bottomImage;
+  final bool isSignup;
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,9 @@ class Background extends StatelessWidget {
                 width: 120,
               ),
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
+            Align(
+              alignment:
+                  isSignup ? Alignment.bottomLeft : Alignment.bottomRight,
               child: Image.asset(bottomImage, width: 120),
             ),
             Padding(
