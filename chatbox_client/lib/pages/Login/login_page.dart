@@ -15,15 +15,9 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const LoginTopImage(),
-            Row(
-              children: const [
-                Spacer(),
-                Expanded(
-                  flex: 8,
-                  child: LoginForm(),
-                ),
-                Spacer(),
-              ],
+            Container(
+              constraints: const BoxConstraints(maxWidth: 450),
+              child: LoginForm(),
             ),
           ],
         ),
