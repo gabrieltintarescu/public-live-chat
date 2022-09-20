@@ -23,6 +23,10 @@ class SignupController extends GetxController {
       );
       return;
     }
+    if (!RegExp(r'^[\w]+@[a-zA-Z]+[.][a-zA-Z]+$').hasMatch(email)) {
+      print('Invalid mail!');
+      return;
+    }
     registerRequest(
       name: name,
       email: email,
@@ -46,7 +50,7 @@ class SignupController extends GetxController {
         snackPosition: SnackPosition.TOP,
         barBlur: 100,
       );
-      Get.to(() => const LoginPage(), transition: Transition.circularReveal);
+      Get.off(() => const LoginPage(), transition: Transition.circularReveal);
     });
   }
 

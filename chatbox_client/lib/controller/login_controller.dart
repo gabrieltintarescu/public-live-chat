@@ -26,7 +26,8 @@ class LoginController extends GetxController {
       GetStorage box = GetStorage();
       box.write('access_token', tokenResponse.accessToken);
       box.write('refresh_token', tokenResponse.refreshToken);
-      Get.to(() => const ChatRoom(), transition: Transition.circularReveal);
+      box.write('username', username);
+      Get.offAll(() => const ChatRoom(), transition: Transition.circularReveal);
     });
   }
 
