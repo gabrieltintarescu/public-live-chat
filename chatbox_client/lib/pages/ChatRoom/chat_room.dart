@@ -22,24 +22,26 @@ class ChatRoom extends StatelessWidget {
         backgroundColor: kPrimaryColor,
         elevation: 6,
         leadingWidth: 54,
-        leading: Align(
-          alignment: Alignment.centerRight,
-          child: IconButton(
-            icon: const Icon(Icons.question_mark),
-            onPressed: () {},
-          ),
-        ),
+        leading: null,
         actions: [
           IconButton(
             icon: const Icon(Icons.exit_to_app),
-            onPressed: () {},
+            onPressed: chatController.disconnectAskUser,
           ),
         ],
-        title: const Text(
-          'Public Chat',
-          style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
+        title: RichText(
+          text: const TextSpan(
+            // Note: Styles for TextSpans must be explicitly defined.
+            // Child text spans will inherit styles from parent
+            style: TextStyle(
+                fontSize: 29.0, color: Colors.white, fontFamily: 'Nexa'),
+            children: <TextSpan>[
+              TextSpan(text: 'Chat'),
+              TextSpan(
+                text: 'Box',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
         ),
       ),
@@ -52,7 +54,6 @@ class ChatRoom extends StatelessWidget {
               flex: 10,
               child: Obx(
                 () => ListView.builder(
-                  controller: chatController.scrollController,
                   itemCount: chatController.chatMessages.length,
                   itemBuilder: ((context, index) {
                     if (chatController.chatMessages[index].senderType ==

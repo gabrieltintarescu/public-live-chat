@@ -25,7 +25,6 @@ class LoginController extends GetxController {
         return;
       }
       GetStorage box = GetStorage();
-      print('Saving $tokenResponse.accessToken');
       box.write('access_token', tokenResponse.accessToken);
       box.write('refresh_token', tokenResponse.refreshToken);
       box.write('username', username);
