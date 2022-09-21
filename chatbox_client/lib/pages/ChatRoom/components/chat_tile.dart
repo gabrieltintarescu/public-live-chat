@@ -1,19 +1,24 @@
 import 'package:chatbox_client/config/configurations.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class ChatTile extends StatelessWidget {
   final String message, username;
   final bool isOwn;
+  final DateTime time;
   const ChatTile({
     super.key,
     required this.message,
     required this.isOwn,
     required this.username,
+    required this.time,
   });
   static const _borderRadius = 26.0;
 
   @override
   Widget build(BuildContext context) {
+    final formattedTime = DateFormat('kk:mm').format(time);
+
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 8,
@@ -53,7 +58,7 @@ class ChatTile extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 8),
               child: Text(
-                isOwn ? '22:12' : '22:12 - $username',
+                isOwn ? formattedTime : '$formattedTime - $username',
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w300,

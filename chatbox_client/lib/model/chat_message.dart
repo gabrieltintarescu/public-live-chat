@@ -1,13 +1,15 @@
 class ChatMessage {
-  bool isOwn;
+  SenderType senderType;
   String username;
-  String message;
-  String date;
+  String? message;
+  DateTime date;
 
   ChatMessage({
-    required this.isOwn,
+    required this.senderType,
     required this.username,
-    required this.message,
+    this.message,
     required this.date,
   });
 }
+
+enum SenderType { self, user, server }
