@@ -28,11 +28,11 @@ Real-time multi-platform chat app with user accounts with roles and admin functi
 -	Admin ban functionality
 
 ### 📖 To Do’s
--	~~Chat & User Models + Roles + Database~~✔️
--	~~User Registration~~✔️
--	~~User Login~~✔️
--	~~Chat functionality~~✔️
--	~~Admin Ban Functionality~~✔️
+-	~~Chat & User Models + Roles + Database~~✅
+-	~~User Registration~~✅
+-	~~User Login~~✅
+-	~~Chat functionality~~✅
+-	~~Admin Ban Functionality~~✅
 -	Moderator mute functionality
 
 
